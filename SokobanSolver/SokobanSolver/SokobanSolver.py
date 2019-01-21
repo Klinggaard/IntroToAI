@@ -236,15 +236,12 @@ def readMap(nameOfFile): #Reads the map and outputs the layout to a list of stri
         initMap.append(tempList)    
         print (line,end = "")
 
-
-
 def visualizeMap(aMap):
     for i in range(len(aMap)):
         for j in range(len(aMap[i])):
             print(aMap[i][j],end="")
         print("\n",end="")
     print("\n")
-
 
 def visualizeMap2(aMap):
     for i in aMap:
@@ -268,8 +265,7 @@ def copyCleanMap(outputMap):
                 GoalList.append([i,j])
                 BoxList.append([i,j])
                 outputMap[i][j] = GOAL
-    return outputMap, mCoord
-        
+    return outputMap, mCoord     
 
 def goalMoveCheck(Map,coord,VH):
     # VH should describe whether the check should be vertical or horizontal 
@@ -307,7 +303,6 @@ def goalMoveCheck(Map,coord,VH):
             elif Map[y][coord[X]] is WALL:
                 break
     return goalSeen
-
 
 def getNeighbouringWalls(map, coord):
     # returns the neighbours of 4-way neighbour-check 
@@ -361,8 +356,6 @@ def checkCorners(map,coord):
         return True
     else:
         return False
-
-
 
 def makeNoBoxList(Map):
     # @ Map         : The game map described in a list of lists, where every element in the inner most list contains is a single character. 
@@ -435,56 +428,6 @@ def makeNoBoxList(Map):
                         tempRetList.append([retList[x][0]+i,retList[x][1]])
                 if len(tempRetList) == distanceBetweenCorners:
                     retList += tempRetList    #        #Do the same for vertical lines
-    #for x in retList:
-    #    for y in retList:
-    #        if retList[x][1] == retList[y][1]:
-    #            Walls1 = getNeighbouringWalls(retList[x][1])
-    #            Walls2 = getNeighbouringWalls(retList[y][1])
-    #        # Try to connect the corners 
-    #            for i in range(len(Walls1)):
-    #                if Walls2[i] in Walls1:
-    #                    commonDirection = Walls2[i]
-    #            #If they don't have a goal and share 1 wall
-    #            #Put all points along that line on retList
-    #            for i in range(retList[y][0]-retList[x][0]):
-    #                if commonDirection in getNeighbouringWalls(retList[x][0]+i) and Map[x][0]+i != GOAL:
-    #                    tempRetList.append(retList[x][0]+i)
-    #            if len(tempRetList) == range(retList[y][0]-retList[x][0]):
-    #                retList.append(tempRetList)
-
-
-    # Find vertical walls which do not have any goals
-
-            
-        #    if Map[y][x] is not WALL and Map[y][x] is not NOTHING:
-        #        # If the current coord is not the player
-        #        # If the current coord is a deadlock pos (DEADLOCK = DL)
-        #        nCont = getNeighboursContent(Map, [y,x])
-        #        count = 0
-        #        for i in nCont:
-        #            if i is WALL:
-        #                count += 1
-
-                    
-        #        # If goal append to list - All goal are eligable
-        #        if Map[y][x] is GOAL:
-        #            retList.append([y,x])
-
-        #        else:
-        #            # DL check 1 : endWall with goal
-        #            print(count, y,x)
-        #            if count < 2:
-        #                if y is len(Map)-2 or y is 1:
-        #                    if goalMoveCheck(Map,[y,x], HORIZONTAL):
-        #                        retList.append([y,x])
-
-        #                elif x is len(Map[y])-2 or x is 1: # -1 would be a wall
-        #                    if goalMoveCheck(Map,[y,x], VERTICAL):
-        #                        retList.append([y,x])
-
-        #                else:
-        #                    retList.append([y,x])
-
     return retList
 
 # ----- Random functions ----------------------------------------------------------------------
@@ -500,6 +443,8 @@ def outputListOfMoves(self):
         self = self.parent
         if self.direction == 'init':
             break
+
+    print(" ")
 
 def getNeighboursContent(Map, coord):
     # returns the neighbours of 4-way neighbour-check 
@@ -581,8 +526,67 @@ def isIllegalMove(coord, dir, boxList): # Returns two variables: first being ill
             return True, None, None
 
 
+def heading2turn(currHeading, newHeading, can):
+    # Translates North, East, South and West to straight, back, left or right
+    # "can" is used to determine whether the direction needs to be in uppercase
+    # returns a new heading and a movement-character describing the straight, back, left or right move 
+    # Headings are described using the numbers:
+    # 
+    # UP = 0
+    # RIGHT  = 1
+    # DOWN = 2
+    # LEFT  = 3
+    #
+    #
+    # Movements will be described by the first letter in the word e.g. back = b 
+    # 
+    # The return of the function is a list 
+    # return = [movement, heading] #
+    
+    normDist = currHeading-newHeading
+
+    if can:
+        if normDist == 0:
+            return 'S', newHeading
+        elif normDist == 1 or normDist == -3:
+            return 'L', newHeading
+        elif normDist == 2 or normDist == -2:
+            return 'B', newHeading
+        elif normDist == -1 or normDist == 3:
+            return 'R', newHeading
+
+    if normDist == 0:
+        return 's', newHeading
+    elif normDist == 1 or normDist == -3:
+        return 'l', newHeading
+    elif normDist == 2 or normDist == -2:
+        return 'b', newHeading
+    elif normDist == -1 or normDist == 3:
+        return 'r', newHeading
+
+    return 0
+
+
+def headingVal(heading):
+    # UP = 0
+    # RIGHT  = 1
+    # DOWN = 2
+    # LEFT  = 3
+
+    if heading is 'U' or heading is 'u':
+        return 0
+    if heading is 'R' or heading is 'r':
+        return 1
+    if heading is 'D' or heading is 'd':
+        return 2
+    if heading is 'L' or heading is 'l':
+        return 3
+
+
 # ----- Program ------------------------------------------------------------------------
 li()
+
+
 readMap('CompetitionMap')
 #readMap("testMap12")
 #readMap("testMap11")   # Read the competition map
@@ -593,17 +597,12 @@ print('initMap')
 visualizeMap2(initMap)
 print('sokobanMap')
 visualizeMap2(sokobanMap)
-# For manual input:
+
 sokobanMap,manCoord = copyCleanMap(sokobanMap)
-#BoxList = []
-#BoxList = [[2,2],[2,3]]
-#GoalList = []
-#GoalList = [[2,1],[2,3]]
-#manCoord = []
-#manCoord = [1,1]
+
 countGoals = len(BoxOnGoal)
             
-li()   # todo : fix initMap
+li()
 print('initMap')
 visualizeMap2(initMap)
 print('sokobanMap')
@@ -621,8 +620,6 @@ print('Amount of boxes already on goal: ',countGoals)
 li()
 print('check noBoxList')
 noBoxList = makeNoBoxList(sokobanMap)
-
-#noBoxList+=[[6,1],[7,1],[8,1],[9,1],[10,2]]
 
 
 print(noBoxList)
@@ -648,23 +645,7 @@ mytree = Tree()
 
 mytree = root
 Openlist.append(root)
-#
-#li()
-#print('test the tree structure')
-#print(root.isLeaf())
 
-#print(isIllegalMove(root.coord,LEFT))
-
-#print('open list ', Openlist)
-
-#root.createChildren()
-
-#print('length of open list', len(Openlist))
-
-#for i in Openlist:
-#    print(i.coord)
-  
-#print(hashTable)
 
 
 li()
@@ -674,18 +655,15 @@ start = timer()
 counterForCounts = 0
 while len(Openlist):
     counterForCounts += 1
-    #for p in range(len(Openlist)):
-    #    print(Openlist[p].name,end=', ')
     Openlist[0].createChildren()
     if GOALREACHED:
         print('Done - GOAL REACHED')
         print('path')
-        #while:
         break
-    else:
-        if counterForCounts%1000==1:
-            print('Length on Openlist: ',len(Openlist),'  Nodes on Openlist:  ',end='')
-            print('Goal not reached')
+    #else:
+    #    if counterForCounts%1000==1:
+    #        print('Length on Openlist: ',len(Openlist),'  Nodes on Openlist:  ',end='')
+    #        print('Goal not reached')
     Openlist.pop(0)
 end = timer()
     
@@ -697,6 +675,24 @@ print(len(hashTable))
 
 li()
 
-print('output string - number of moves:',len(resultString),'  ' , resultString[::-1])
+counter = 0
+currHead = 0
+newHead = 0
+retString = ''
+tempRet =''
+for i in resultString[::-1]:
+    newHead = headingVal(i)
+    if counter == 0:
+        currHead = newHead
+        counter+=1
+    if i.isupper():
+        tempRet, currHead = heading2turn(currHead,newHead,True)
+    else:
+        tempRet, currHead = heading2turn(currHead,newHead,False)
+    retString+=tempRet
+
+print("Route found:")
+print(retString)
+
 li()
 print('Time elapsed in seconds: ', end - start) # Time in seconds, e.g. 5.38091952400282
